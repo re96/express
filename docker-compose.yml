@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+
+  db:
+    container_name: api-db
+    image: mysql:latest
+    restart: always
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db/conf.d:/etc/mysql/conf.d
+      - ./db/initdb.d:/docker-entrypoint-initdb.d
+      - ./db/data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: API
+      MYSQL_USER: api_user
+      MYSQL_PASSWORD: api_password
+      MYSQL_ROOT_PASSWORD: express
+      TZ: Asia/Seoul
+      LANG: en_US.UTF-8
+
+  express:
+    container_name: api-express
+    build:
+      context: ./express
+      dockerfile: dockerfile
+    depends_on:
+      - api-db
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    volumes:
+      - ./express/src:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      TZ: Asia/Seoul
