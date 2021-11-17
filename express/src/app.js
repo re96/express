@@ -1,12 +1,8 @@
-'use strict'
-
 const express = require('express')
-const app = new express()
+const routes = require('./routes')
 
-app.get('/', (req, res) => {
-    return res.send('Hello!')
-})
+const app = express()
 
-app.listen(3000, () => {
-    console.log('Listening on port 3000...')
-})
+app.use('/', routes)
+
+module.exports = app
